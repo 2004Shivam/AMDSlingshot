@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const navItems = [
   { href: "/", icon: "🏠", label: "Home", activeIcon: "🏠" },
@@ -14,15 +14,14 @@ const navItems = [
 
 export default function NavShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isPWA, setIsPWA] = useState(false);
-
-  useEffect(() => {
-    // Detect if running as installed PWA
-    const standalone =
+  // Lazy initializer: detect PWA standalone mode once at mount (avoids useEffect anti-pattern)
+  const [isPWA] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return (
       window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-    setIsPWA(standalone);
-  }, []);
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+    );
+  });
 
   return (
     <div className={`nav-shell ${isPWA ? "pwa-mode" : "web-mode"}`}>

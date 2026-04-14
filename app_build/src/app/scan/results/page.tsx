@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import styles from "./results.module.css";
 
@@ -28,16 +28,17 @@ interface ScanResult {
 }
 
 export default function ScanResultsPage() {
-  const [result, setResult] = useState<ScanResult | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<number | null>(0);
-
-  useEffect(() => {
+  // Lazy initializers read sessionStorage once at mount — avoids useEffect setState anti-pattern
+  const [result] = useState<ScanResult | null>(() => {
+    if (typeof window === "undefined") return null;
     const r = sessionStorage.getItem("evee_scan_result");
-    const p = sessionStorage.getItem("evee_scan_preview");
-    if (r) setResult(JSON.parse(r));
-    if (p) setPreview(p);
-  }, []);
+    return r ? (JSON.parse(r) as ScanResult) : null;
+  });
+  const [preview] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem("evee_scan_preview");
+  });
+  const [expanded, setExpanded] = useState<number | null>(0);
 
   const scoreClass = (score: number) => {
     if (score >= 80) return "score-badge-high";
