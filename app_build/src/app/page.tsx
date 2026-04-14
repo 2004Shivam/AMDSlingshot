@@ -14,8 +14,8 @@ export default function HomePage() {
   const { text, emoji } = greeting();
 
   return (
-    <>
-      {/* ── Header ── */}
+    <div className="app-shell">
+      {/* ── Mobile Header (hidden on web) ── */}
       <header className="app-header">
         <span className="logo">evee</span>
         <div className="flex items-center gap-3">
@@ -26,16 +26,40 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* ── Web Header (hidden on mobile/PWA) ── */}
+      <div className="web-header">
+        <div>
+          <p className="text-caption text-tertiary">{emoji} {text}</p>
+          <p className="text-title" style={{ marginTop: 2 }}>What are you eating next?</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/scan" className="btn btn-primary" style={{ padding: "10px 20px", fontSize: 14 }}>
+            📷 Scan Menu
+          </Link>
+          <div className={styles.avatar}>R</div>
+        </div>
+      </div>
+
       {/* ── Main Content ── */}
       <main className="page-content">
 
-        {/* Greeting */}
-        <div className={styles.greeting}>
+        {/* Greeting (mobile only) */}
+        <div className={`${styles.greeting} mobile-only`}>
           <p className="text-caption text-secondary">{emoji} {text}</p>
           <h1 className="text-display" style={{ marginTop: 4 }}>
             What are you<br />
             <span className="text-ember">eating next?</span>
           </h1>
+        </div>
+
+        {/* Web greeting */}
+        <div className={`${styles.greeting} web-only`}>
+          <h1 className="text-headline" style={{ marginTop: 0 }}>
+            Your <span className="text-ember">food intelligence</span> dashboard
+          </h1>
+          <p className="text-body text-secondary" style={{ marginTop: 6 }}>
+            Track meals, scan menus, and get AI-powered insights tailored to your goals.
+          </p>
         </div>
 
         {/* Active Nudge Banner */}
@@ -49,11 +73,11 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Primary Actions */}
+        {/* Primary Actions — responsive grid */}
         <div className={styles.actionSection}>
           <p className="text-label text-tertiary" style={{ marginBottom: 16 }}>Quick actions</p>
           
-          <div className={styles.fabRow}>
+          <div className={`${styles.fabRow} web-grid-2`}>
             {/* Scan Menu FAB */}
             <Link href="/scan" className={styles.fabCard}>
               <div className="fab fab-primary pulse-ember">📷</div>
@@ -115,6 +139,30 @@ export default function HomePage() {
         </div>
 
       </main>
-    </>
+
+      {/* ── Bottom Nav (mobile/PWA only — rendered by NavShell) ── */}
+      <nav className="bottom-nav">
+        <Link href="/" className="nav-item active">
+          <span className="nav-item-icon">🏠</span>
+          <span className="nav-item-label">Home</span>
+        </Link>
+        <Link href="/scan" className="nav-item">
+          <span className="nav-item-icon">📷</span>
+          <span className="nav-item-label">Scan</span>
+        </Link>
+        <Link href="/insights" className="nav-item">
+          <span className="nav-item-icon">✨</span>
+          <span className="nav-item-label">Insights</span>
+        </Link>
+        <Link href="/history" className="nav-item">
+          <span className="nav-item-icon">📋</span>
+          <span className="nav-item-label">History</span>
+        </Link>
+        <Link href="/log" className="nav-item">
+          <span className="nav-item-icon">🎙️</span>
+          <span className="nav-item-label">Log</span>
+        </Link>
+      </nav>
+    </div>
   );
 }

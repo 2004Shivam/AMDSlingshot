@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import NavShell from "@/components/NavShell";
 
 export const metadata: Metadata = {
   title: "Evee — AI Food Intelligence",
@@ -38,7 +39,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body>
-        <div className="app-shell">{children}</div>
+        <NavShell>{children}</NavShell>
       </body>
     </html>
   );

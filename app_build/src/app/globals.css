@@ -94,6 +94,8 @@
   --max-width: 430px;
   --header-height: 64px;
   --bottom-nav-height: 80px;
+  --sidebar-width: 260px;
+  --web-content-max: 900px;
 }
 
 /* ── Reset ────────────────────────────────────────────────── */
@@ -121,7 +123,30 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── App Shell ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   ADAPTIVE SHELL — Web sidebar + PWA bottom nav
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Nav Shell wrapper ─────────────────────────────────── */
+.nav-shell {
+  min-height: 100dvh;
+  display: flex;
+}
+
+/* ── SIDEBAR (web desktop only) ────────────────────────── */
+.sidebar {
+  display: none; /* hidden on mobile/PWA */
+}
+
+/* ── MAIN CONTENT ───────────────────────────────────────── */
+.shell-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Mobile / PWA app shell ─────────────────────────────── */
 .app-shell {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -129,7 +154,189 @@ body {
   position: relative;
   background: var(--bg-base);
   overflow: hidden;
+  width: 100%;
 }
+
+/* ════════════════════════════════════════════════════════
+   BREAKPOINT: Desktop Web (≥ 768px, NOT PWA standalone)
+   ════════════════════════════════════════════════════════ */
+@media (min-width: 768px) {
+  /* Show sidebar */
+  .web-mode .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: var(--sidebar-width);
+    min-height: 100dvh;
+    background: var(--bg-surface-low);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    z-index: 50;
+  }
+
+  /* Widen content area */
+  .web-mode .shell-content {
+    background: var(--bg-base);
+  }
+
+  .web-mode .app-shell {
+    max-width: var(--web-content-max);
+    margin: 0 auto;
+  }
+
+  /* Hide bottom nav on web */
+  .web-mode .bottom-nav {
+    display: none !important;
+  }
+
+  /* Web page content — no bottom nav padding */
+  .web-mode .page-content {
+    padding-bottom: var(--space-10);
+  }
+
+  /* Web grid layouts */
+  .web-mode .web-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  .web-mode .web-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   PWA mode always stays mobile regardless of screen size
+   ════════════════════════════════════════════════════════ */
+.pwa-mode .sidebar { display: none !important; }
+.pwa-mode .bottom-nav { display: flex !important; }
+.pwa-mode .app-shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* ── Sidebar Internals ──────────────────────────────────── */
+.sidebar-logo {
+  padding: var(--space-6) var(--space-5) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-tagline {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 11px var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+  text-decoration: none;
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sidebar-nav-item:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-item.active {
+  background: var(--ember-dim);
+  color: var(--ember);
+}
+
+.sidebar-nav-icon { font-size: 18px; }
+.sidebar-nav-label { flex: 1; }
+
+.sidebar-active-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--ember);
+}
+
+.sidebar-footer {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sidebar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--ember), var(--indigo));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.sidebar-user-info { flex: 1; }
+
+/* ── Web top header (shown only on web, inside content) ── */
+.web-header {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .web-mode .web-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-5) var(--space-8);
+    border-bottom: 1px solid var(--border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+
+  /* Hide mobile-only header on web */
+  .web-mode .app-header {
+    display: none;
+  }
+}
+
 
 /* ── Typography ───────────────────────────────────────────── */
 .text-display { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1.2; letter-spacing: -0.5px; }
@@ -459,3 +666,16 @@ body {
 /* ── Safe Area (iPhone notch etc.) ───────────────────────── */
 .safe-top { padding-top: env(safe-area-inset-top); }
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ── Responsive Show/Hide ─────────────────────────────────── */
+/* mobile-only: visible on mobile, hidden on web desktop */
+.mobile-only { display: block; }
+.web-only { display: none; }
+
+@media (min-width: 768px) {
+  .web-mode .mobile-only { display: none; }
+  .web-mode .web-only { display: block; }
+}
+
+.pwa-mode .mobile-only { display: block !important; }
+.pwa-mode .web-only { display: none !important; }
