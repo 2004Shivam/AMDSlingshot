@@ -7,5 +7,6 @@ const withSerwist = require("@ducanh2912/next-pwa").default({
 });
 
 module.exports = withSerwist({
-  turbopack: {},   // silence Next 16 turbopack warning
+  output: "standalone",  // Required for Docker / Cloud Run deployment
+  turbopack: {},         // Silence Next.js 16 turbopack warning
 });
