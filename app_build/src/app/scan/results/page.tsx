@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import styles from "./results.module.css";
+import { logMeal } from "@/lib/firestoreService";
 
 interface Recommendation {
   rank: number;
@@ -39,6 +40,26 @@ export default function ScanResultsPage() {
     return sessionStorage.getItem("evee_scan_preview");
   });
   const [expanded, setExpanded] = useState<number | null>(0);
+  const [logState, setLogState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+
+  const handleLogMeal = useCallback(async (rec: Recommendation) => {
+    if (logState !== "idle") return;
+    setLogState("saving");
+    try {
+      const id = await logMeal({
+        dish_name: rec.dish_name,
+        score: rec.score,
+        estimated_price_inr: rec.estimated_price_inr,
+        macro_estimate: rec.macro_estimate,
+        dietary_pref: sessionStorage.getItem("evee_diet") ?? "veg",
+        scan_id: result?.scan_id,
+        source: "scan",
+      });
+      setLogState(id ? "saved" : "error");
+    } catch {
+      setLogState("error");
+    }
+  }, [logState, result]);
 
   const scoreClass = (score: number) => {
     if (score >= 80) return "score-badge-high";
@@ -192,12 +213,34 @@ export default function ScanResultsPage() {
           </div>
         )}
 
-        {/* Log CTA */}
+        {/* Log CTA — saves to Firestore */}
         <div className={styles.logCta}>
-          <p className="text-body text-secondary text-center">Going with the top pick?</p>
-          <button className="btn btn-primary w-full" style={{ marginTop: 12 }}>
-            ✅ Log {result.recommendations[0]?.dish_name || "this meal"}
-          </button>
+          {logState === "saved" ? (
+            <div className="card card-indigo" style={{ textAlign: "center", padding: "20px" }}>
+              <p style={{ fontSize: 32 }}>🎉</p>
+              <p className="text-body-lg" style={{ fontWeight: 700, marginTop: 8 }}>Meal logged!</p>
+              <p className="text-body text-secondary" style={{ marginTop: 4 }}>
+                Saved to your food history in Firestore
+              </p>
+            </div>
+          ) : (
+            <>
+              <p className="text-body text-secondary text-center">Going with the top pick?</p>
+              <button
+                className="btn btn-primary w-full"
+                style={{ marginTop: 12 }}
+                onClick={() => handleLogMeal(result.recommendations[0])}
+                disabled={logState !== "idle"}
+              >
+                {logState === "saving" ? "⏳ Saving..." : `✅ Log ${result.recommendations[0]?.dish_name || "this meal"}`}
+              </button>
+              {logState === "error" && (
+                <p className="text-caption text-secondary text-center" style={{ marginTop: 8 }}>
+                  ⚠️ Could not save — check your connection
+                </p>
+              )}
+            </>
+          )}
           <Link href="/scan" className="btn btn-ghost w-full" style={{ marginTop: 8, justifyContent: "center" }}>
             Scan another menu
           </Link>

@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Meal logs: any anonymous user can write/read their own device doc
+    match /meal_logs/{docId} {
+      allow read, write: if request.auth == null || request.auth != null;
+    }
+    // Scan history: per-session reading
+    match /scan_history/{docId} {
+      allow read, write: if request.auth == null || request.auth != null;
+    }
+  }
+}
