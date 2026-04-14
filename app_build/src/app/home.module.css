@@ -1,0 +1,91 @@
+.greeting {
+  margin-bottom: 24px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ember), var(--indigo));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+}
+
+.nudgeBanner {
+  margin-bottom: 28px;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.nudgeBanner:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-ember);
+}
+
+.nudgeIcon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.actionSection {
+  margin-bottom: 28px;
+}
+
+.fabRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fabCard {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  color: inherit;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.fabCard:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.fabCard:active { transform: scale(0.97); }
+
+.fabChip {
+  margin-top: 12px;
+  width: fit-content;
+}
+
+.summarySection {
+  margin-bottom: 24px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 32px 20px;
+}
+
+.insightTeaser {
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.insightTeaser:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-indigo);
+}

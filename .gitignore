@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+.next/
+out/
+
+# Environment — NEVER COMMIT
+.env
+.env.local
+.env*.local
+*.env
+
+# GCP secrets
+gcloud-service-key.json
+service-account.json
+
+# Python (Phase 2 backend)
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build artifacts
+*.log
+npm-debug.log*
